@@ -84,6 +84,7 @@ fn main() -> Result<()> {
         |store, module, linker| Exports::instantiate(store, module, linker, |cx| &mut cx.exports),
     )?;
     exports.modulef1(&mut store, "sdf")?;
+    exports.modulef4(&mut store, &[1, 2, 3, 4])?;
     
     Ok(())
 }

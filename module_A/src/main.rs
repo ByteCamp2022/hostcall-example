@@ -17,6 +17,10 @@ impl exports::Exports for Exports {
         println!("implemeted in module");
     }
 
+    fn modulef4(slice: Vec<u8>) {
+        println!("first {}", slice[0]);
+    }
+
 }
 
 fn main() {

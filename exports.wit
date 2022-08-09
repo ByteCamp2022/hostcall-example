@@ -1,4 +1,5 @@
 modulef1: func(s: string)
 modulef2: func() -> string
 modulef3: func()
+modulef4: func(ls: list<u8>)
 
