@@ -9,13 +9,52 @@ use imports::*;
 use exports::*;
 
 
+fn f1(n: i32) -> i32 {
+    println!("from old f1");
+    n
+}
+
+fn f11(n: i32) -> i32 {
+    println!("from new f1");
+    n
+}
+
+fn f2(s: &str) -> &str {
+    println!("f2");
+    s
+}
+
+fn f3() {
+    println!("f3");
+}
+
+struct FuncMap {
+    f1: fn(i32) -> i32,
+    f2: fn(&str) -> &str,
+}
+
+impl FuncMap {
+    fn new(f1: fn(i32) -> i32, f2: fn(&str) -> &str) -> FuncMap {
+        FuncMap { f1, f2}
+    }
+}
+
+static mut fm: FuncMap = FuncMap {
+    f1: f1,
+    f2: f2,
+};
+
+
 #[derive(Default)]
 pub struct MyImports;
 
 
 impl Imports for MyImports {
     fn hostf1(&mut self, s: &str) {
-        println!("{}", s);
+        // println!("{}", s);
+        unsafe {
+            (fm.f1)(5);
+        }
     }
 
 }
@@ -84,7 +123,13 @@ fn main() -> Result<()> {
         |store, module, linker| Exports::instantiate(store, module, linker, |cx| &mut cx.exports),
     )?;
     exports.modulef1(&mut store, "sdf")?;
-    exports.modulef4(&mut store, &[1, 2, 3, 4])?;
+
+    unsafe {
+        fm.f1 = f11;
+    }
+
+    exports.modulef1(&mut store, "sdf")?;
+    //exports.modulef4(&mut store, &[1, 2, 3, 4])?;
     
     Ok(())
 }
