@@ -1,0 +1,4 @@
+modulef1: func(s: string)
+modulef2: func() -> string
+modulef3: func()
+
