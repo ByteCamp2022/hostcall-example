@@ -186,14 +186,10 @@ use exports::*;
 
 // ----------------- 实际实现 --------------
 fn f1(s: &String) -> &String {
-    println!("from old f1, {}", s);
+    println!("from f1, {}", s);
     s
 }
 
-fn f11(n: i32) -> i32 {
-    println!("from new f1");
-    n
-}
 
 fn f2(s: &String) -> &String {
     println!("from f2, {}", s);
@@ -304,8 +300,14 @@ fn registry_module(path: &str, name: &str) -> Result<()> {
     Ok(())
 }
 
-fn test(exp: Exports<Context<MyImports, ExportsData>>, store: Store<Context<MyImports, ExportsData>>) {
-    exp.proxy(store, "f1", "sd");
+fn call_module_func(mname: &str, fname: &str, param: &str) -> String {
+
+    let mut map = MODULE_FUNC.lock().unwrap();
+    let (e, mut s) = map.remove(mname).unwrap();
+    let rs = e.proxy(&mut s, fname, param);      
+    map.insert(String::from(mname), (e, s));
+
+    rs.unwrap()
 }
 
 fn main() -> Result<()> {
@@ -327,23 +329,11 @@ fn main() -> Result<()> {
 
     // 加载 “module_A.wasm” ，并注册为 “module_A”
     registry_module("module_A.wasm", "module_A");
-
-    {
-        let mut map = MODULE_FUNC.lock().unwrap();
-        let (e, mut s) = map.remove("module_A").unwrap();
-        e.proxy(&mut s, "modulef1", "vvvv");      
-        map.insert(String::from("module_A"), (e, s));
-    }
+    call_module_func("module_A", "modulef1", "call after first load");
 
     // 加载 “module_B.wasm” ，并注册为 “module_A”
     registry_module("module_B.wasm", "module_A");
-
-    {
-        let mut map = MODULE_FUNC.lock().unwrap();
-        let (e, mut s) = map.remove("module_A").unwrap();
-        e.proxy(&mut s, "modulef1", "vvvv");   
-        map.insert(String::from("module_A"), (e, s));
-    }
+    call_module_func("module_A", "modulef1", "call after seconed load");
 
 
     Ok(())
