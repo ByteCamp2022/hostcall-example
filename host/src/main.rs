@@ -79,12 +79,16 @@ fn instantiate<I: Default, E: Default, T>(
 fn main() -> Result<()> {
 
     let (exports, mut store) = crate::instantiate(
-        "module_A.wasm",
+        "module_net.wasm",
         |linker| imports::add_to_linker(linker, |cx| -> &mut MyImports { &mut cx.imports }),
         |store, module, linker| Exports::instantiate(store, module, linker, |cx| &mut cx.exports),
     )?;
     exports.modulef1(&mut store, "sdf")?;
+    let s2 = exports.modulef2(&mut store)?;
+    println!("{}", s2);
+    exports.modulef3(&mut store)?;
     exports.modulef4(&mut store, &[1, 2, 3, 4])?;
+    exports.modulenet(&mut store)?;
     
     Ok(())
 }

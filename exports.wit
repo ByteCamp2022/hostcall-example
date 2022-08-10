@@ -3,3 +3,4 @@ modulef2: func() -> string
 modulef3: func()
 modulef4: func(ls: list<u8>)
 
+modulenet: func()
