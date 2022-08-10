@@ -1,2 +1,1 @@
-hostf1: func(s: string)
-
+proxy: func(name: string, param: string) -> string

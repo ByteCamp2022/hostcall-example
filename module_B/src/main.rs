@@ -23,7 +23,7 @@ impl exports::Exports for Exports {
 }
 
 fn modulef1(s: String) -> String{
-    println!("module a, message: {}", s);
+    println!("module b, message: {}", s);
     imports::proxy("f1", "implemented in host");
     "modulef1".into()
 }
