@@ -24,9 +24,9 @@ impl exports::Exports for Exports {
     }
 
     fn modulenet() {
-        println!("TcpListener Test");
-        let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
-        println!("It works.");
+        println!("TcpStream Test");
+        let res = imports::hostnet();
+        println!("{}\nIt works.", res);
     }
 }
 

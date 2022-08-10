@@ -2,6 +2,10 @@
 use anyhow::Result;
 use wasmtime::*;
 
+use std::net::TcpListener;
+use std::io::{prelude::*, self, BufReader, Write};
+use std::net::TcpStream;
+
 wit_bindgen_wasmtime::export!("../imports.wit");
 wit_bindgen_wasmtime::import!("../exports.wit");
 
@@ -16,6 +20,37 @@ pub struct MyImports;
 impl Imports for MyImports {
     fn hostf1(&mut self, s: &str) {
         println!("{}", s);
+    }
+
+    fn hostnet(&mut self) -> String {
+        // let lis = TcpListener::bind("127.0.0.1:7878").unwrap();
+
+        // for stream in lis.incoming() {
+        //     let mut stream = stream.unwrap();
+
+        //     let mut buffer = [0; 1024];
+
+        //     stream.read(&mut buffer).unwrap();
+
+        //     println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
+        // }
+
+        let mut stream = TcpStream::connect("127.0.0.1:7878").unwrap();
+        
+        for _ in 0..10 {
+            let mut req = String::new();
+            io::stdin().read_line(&mut req).expect("read fail");
+            stream.write(req.as_bytes()).expect("fail");
+
+            let mut reader = BufReader::new(&stream);
+            let mut buffer: Vec<u8> = Vec::new();
+            reader.read_until(b'\n', &mut buffer).expect("fail");
+
+            println!("read from server: {}", std::str::from_utf8(&buffer).unwrap());
+            println!("");
+        }
+
+        return "nice".into();
     }
 
 }
