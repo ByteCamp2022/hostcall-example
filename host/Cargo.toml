@@ -12,5 +12,6 @@
     wasmtime = { version = "0.38.0" }
     wasmtime-wasi    = { version = "0.38.0" }
     lazy_static      = "1.4.0"
-
+    serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+    serde = "1.0.70"
 [workspace]
